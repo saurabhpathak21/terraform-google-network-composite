@@ -3,7 +3,6 @@ variable "organization_id" {
   description = "The organization id for the associated services"
 }
 
-
 variable "folder_id" {
   description = "The folder id for the associated project"
   type        = string
@@ -14,8 +13,6 @@ variable "billing_account" {
   description = "The ID of the billing account to associate this project with"
   
 }
-
-//network 
 
 variable "type" {
   description = "The type of the project if it is hub or spoke."
@@ -90,8 +87,6 @@ variable "mtu" {
   default     = 0
 }
 
-// DNS
-
 variable "network_self_links" {
   description = "Self link of the network that will be allowed to query the zone."
   default     = []
@@ -115,8 +110,6 @@ variable "labels" {
     version = "1.0"
   }
 }
-
-//vpn
 
 variable "router_name" {
   description = "Name of router, leave blank to create one."

@@ -79,14 +79,10 @@ output "route_names" {
   description = "The route names associated with this VPC"
 }
 
-
-//DNS
 output "name_servers" {
   description = "Zone name servers."
   value       = module.dns-private-zone.name_servers
 }
-
-//vpn
 
 output "router_name" {
   description = "router name"
