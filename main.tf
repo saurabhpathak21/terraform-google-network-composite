@@ -1,11 +1,8 @@
 
 
 locals {
-
-  subnet  = yamldecode(file("${path.module}/subnets.yaml"))
-  route   = yamldecode(file("${path.module}/routes.yaml"))
   project_name = "acceleration-${var.type}"
-  network_name =  var.type
+  network_name = var.type
   region       = "europe-west2"
   rules = [
     for f in var.firewall_rules : {
@@ -27,33 +24,31 @@ locals {
 
 
 /******************************************
-	Project
+  Hub Project Creation
  *****************************************/
 
-
 module "project" {
-  source               = "./modules/project"
+  source = "./modules/project"
 
-  random_project_id    = true
-  name                 = local.project_name
-  org_id               = var.organization_id
-  #folder_id            = var.folder_id
-  billing_account      = var.billing_account
-  default_network_tier = var.default_network_tier
+  random_project_id              = true
+  name                           = local.project_name
+  org_id                         = var.organization_id
+  folder_id                      = var.folder_id
+  billing_account                = var.billing_account
+  enable_shared_vpc_host_project = true
+  default_network_tier           = var.default_network_tier
 
   activate_apis = [
     "compute.googleapis.com",
-    "dns.googleapis.com"
+    "dns.googleapis.com",
+    "cloudresourcemanager.googleapis.com"
   ]
-
 }
+
 
 /******************************************
 	IAM
  *****************************************/
-
-
-#Assign Permission
 
 resource "google_project_iam_binding" "project" {
   project = module.project.project_id
@@ -72,9 +67,9 @@ resource "google_project_iam_binding" "project" {
 module "vpc" {
   source = "./modules/network/vpc"
 
-  #count        = var.type == "hub" ? 1 : 0
-  network_name = "${local.network_name}-acceleration-xpn-001"
-  project_id   = module.project.project_id
+  network_name                           = "${local.network_name}-acceleration-xpn-001"
+  project_id                             = module.project.project_id
+  delete_default_internet_gateway_routes = true
 
 }
 
@@ -86,7 +81,7 @@ module "subnets" {
 
   project_id       = module.project.project_id
   network_name     = module.vpc.network_name
-  subnets          = local.subnet.subnets
+  subnets          = var.subnets
   secondary_ranges = var.secondary_ranges
 }
 
@@ -98,7 +93,7 @@ module "routes" {
 
   project_id        = module.project.project_id
   network_name      = module.vpc.network_name
-  routes            = local.route.routes
+  routes            = var.routes
   module_depends_on = [module.subnets.subnets]
 }
 
@@ -111,7 +106,7 @@ module "firewall_rules" {
 
   project_id   = module.project.project_id
   network_name = module.vpc.network_name
-  for_each        = { for rule in local.rules:  "${rule.fileName}--${rule.id}" => rule }
+  for_each     = { for rule in local.rules : "${rule.fileName}--${rule.id}" => rule }
   rules        = each.value
 }
 
@@ -120,12 +115,12 @@ module "firewall_rules" {
  *****************************************/
 
 module "dns-private-zone" {
-  source     = "./modules/network/dns"
+  source = "./modules/network/dns"
 
-  project_id = module.project.project_id
-  type       = "private"
-  name       = "${local.network_name}-acceleration"
-  domain     = "new-acceleration.com."
+  project_id                         = module.project.project_id
+  type                               = "private"
+  name                               = "${local.network_name}-acceleration"
+  domain                             = "new-acceleration.com."
   private_visibility_config_networks = [module.vpc.network_self_link]
 
   recordsets = [

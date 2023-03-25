@@ -11,7 +11,7 @@ variable "folder_id" {
 
 variable "billing_account" {
   description = "The ID of the billing account to associate this project with"
-  
+
 }
 
 variable "type" {
@@ -32,7 +32,7 @@ variable "routing_mode" {
   description = "The network routing mode (default 'GLOBAL')"
 }
 
-variable "shared_vpc_host" {
+variable "enable_shared_vpc_host_project" {
   type        = bool
   description = "Makes this project a Shared VPC host if 'true' (default 'false')"
   default     = true

@@ -14,6 +14,36 @@
  * limitations under the License.
  */
 
+variable "group_email" {
+  description = "The email address of a group to control the project by being assigned group_role."
+  type        = string
+  default     = ""
+}
+
+variable "group_role" {
+  description = "The role to give the controlling group (group_name) over the project."
+  type        = string
+  default     = ""
+}
+
+variable "lien" {
+  description = "Add a lien on the project to prevent accidental deletion"
+  default     = false
+  type        = bool
+}
+
+variable "manage_group" {
+  description = "A toggle to indicate if a G Suite group should be managed."
+  type        = bool
+  default     = false
+}
+
+variable "project_id" {
+  description = "The ID to give the project. If not provided, the `name` will be used."
+  type        = string
+  default     = ""
+}
+
 variable "random_project_id" {
   description = "Adds a suffix of 4 random characters to the `project_id`."
   type        = bool
@@ -31,33 +61,15 @@ variable "org_id" {
   type        = string
 }
 
-variable "domain" {
-  description = "The domain name (optional)."
-  type        = string
-  default     = ""
-}
-
 variable "name" {
   description = "The name for the project"
   type        = string
 }
 
-variable "project_id" {
-  description = "The ID to give the project. If not provided, the `name` will be used."
-  type        = string
-  default     = ""
-}
-
-variable "svpc_host_project_id" {
+variable "shared_vpc" {
   description = "The ID of the host project which hosts the shared VPC"
   type        = string
   default     = ""
-}
-
-variable "enable_shared_vpc_host_project" {
-  description = "If this project is a shared VPC host project. If true, you must *not* set svpc_host_project_id variable. Default is false."
-  type        = bool
-  default     = false
 }
 
 variable "billing_account" {
@@ -69,18 +81,6 @@ variable "folder_id" {
   description = "The ID of a folder to host this project"
   type        = string
   default     = ""
-}
-
-variable "group_name" {
-  description = "A group to control the project by being assigned group_role (defaults to project editor)"
-  type        = string
-  default     = ""
-}
-
-variable "group_role" {
-  description = "The role to give the controlling group (group_name) over the project (defaults to project editor)"
-  type        = string
-  default     = "roles/editor"
 }
 
 variable "create_project_sa" {
@@ -199,12 +199,6 @@ variable "auto_create_network" {
   default     = false
 }
 
-variable "lien" {
-  description = "Add a lien on the project to prevent accidental deletion"
-  type        = bool
-  default     = false
-}
-
 variable "disable_services_on_destroy" {
   description = "Whether project services will be disabled when the resources are destroyed"
   default     = true
@@ -223,68 +217,15 @@ variable "disable_dependent_services" {
   type        = bool
 }
 
-variable "budget_amount" {
-  description = "The amount to use for a budget alert"
-  type        = number
-  default     = null
+variable "enable_shared_vpc_service_project" {
+  description = "If this project should be attached to a shared VPC. If true, you must set shared_vpc variable."
+  type        = bool
 }
 
-variable "budget_display_name" {
-  description = "The display name of the budget. If not set defaults to `Budget For <projects[0]|All Projects>` "
-  type        = string
-  default     = null
-}
-
-variable "budget_alert_pubsub_topic" {
-  description = "The name of the Cloud Pub/Sub topic where budget related messages will be published, in the form of `projects/{project_id}/topics/{topic_id}`"
-  type        = string
-  default     = null
-}
-
-variable "budget_monitoring_notification_channels" {
-  description = "A list of monitoring notification channels in the form `[projects/{project_id}/notificationChannels/{channel_id}]`. A maximum of 5 channels are allowed."
-  type        = list(string)
-  default     = []
-}
-
-variable "budget_alert_spent_percents" {
-  description = "A list of percentages of the budget to alert on when threshold is exceeded"
-  type        = list(number)
-  default     = [0.5, 0.7, 1.0]
-}
-
-variable "budget_alert_spend_basis" {
-  description = "The type of basis used to determine if spend has passed the threshold"
-  type        = string
-  default     = "CURRENT_SPEND"
-}
-
-variable "budget_labels" {
-  description = "A single label and value pair specifying that usage from only this set of labeled resources should be included in the budget."
-  type        = map(string)
-  default     = {}
-  validation {
-    condition     = length(var.budget_labels) <= 1
-    error_message = "Only 0 or 1 labels may be supplied for the budget filter."
-  }
-}
-
-variable "budget_calendar_period" {
-  description = "Specifies the calendar period for the budget. Possible values are MONTH, QUARTER, YEAR, CALENDAR_PERIOD_UNSPECIFIED, CUSTOM. custom_period_start_date and custom_period_end_date must be set if CUSTOM"
-  type        = string
-  default     = null
-}
-
-variable "budget_custom_period_start_date" {
-  description = "Specifies the start date (DD-MM-YYYY) for the calendar_period CUSTOM"
-  type        = string
-  default     = null
-}
-
-variable "budget_custom_period_end_date" {
-  description = "Specifies the end date (DD-MM-YYYY) for the calendar_period CUSTOM"
-  type        = string
-  default     = null
+variable "enable_shared_vpc_host_project" {
+  description = "If this project is a shared VPC host project. If true, you must *not* set shared_vpc variable. Default is false."
+  type        = bool
+  default     = false
 }
 
 variable "vpc_service_control_attach_enabled" {
@@ -305,44 +246,14 @@ variable "vpc_service_control_sleep_duration" {
   default     = "5s"
 }
 
-variable "grant_services_security_admin_role" {
-  description = "Whether or not to grant Kubernetes Engine Service Agent the Security Admin role on the host project so it can manage firewall rules"
-  type        = bool
-  default     = false
-}
-
-variable "grant_network_role" {
-  description = "Whether or not to grant networkUser role on the host project/subnets"
-  type        = bool
-  default     = true
-}
-
-variable "consumer_quotas" {
-  description = "The quotas configuration you want to override for the project."
-  type = list(object({
-    service    = string,
-    metric     = string,
-    dimensions = map(string),
-    limit      = string,
-    value      = string,
-  }))
-  default = []
-}
-
 variable "default_network_tier" {
   description = "Default Network Service Tier for resources created in this project. If unset, the value will not be modified. See https://cloud.google.com/network-tiers/docs/using-network-service-tiers and https://cloud.google.com/network-tiers."
   type        = string
   default     = ""
 }
 
-variable "essential_contacts" {
-  description = "A mapping of users or groups to be assigned as Essential Contacts to the project, specifying a notification category"
-  type        = map(list(string))
-  default     = {}
-}
-
-variable "language_tag" {
-  description = "Language code to be used for essential contacts notifications"
-  type        = string
-  default     = "en-US"
+variable "grant_network_role" {
+  description = "Whether or not to grant networkUser role on the host project/subnets"
+  type        = bool
+  default     = true
 }
