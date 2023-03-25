@@ -19,14 +19,14 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_cloud_router"></a> [cloud\_router](#module\_cloud\_router) | ./modules/vpc/cloud_router | n/a |
-| <a name="module_dns-private-zone"></a> [dns-private-zone](#module\_dns-private-zone) | ./modules/vpc/dns | n/a |
-| <a name="module_firewall_rules"></a> [firewall\_rules](#module\_firewall\_rules) | ./modules/vpc/firewalls | n/a |
+| <a name="module_cloud_router"></a> [cloud\_router](#module\_cloud\_router) | ./modules/network/cloud_router | n/a |
+| <a name="module_dns-private-zone"></a> [dns-private-zone](#module\_dns-private-zone) | ./modules/network/dns | n/a |
+| <a name="module_firewall_rules"></a> [firewall\_rules](#module\_firewall\_rules) | ./modules/network/firewalls | n/a |
 | <a name="module_project"></a> [project](#module\_project) | ./modules/project | n/a |
-| <a name="module_routes"></a> [routes](#module\_routes) | ./modules/vpc/routes | n/a |
-| <a name="module_subnets"></a> [subnets](#module\_subnets) | ./modules/vpc/subnets | n/a |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | ./modules/vpc | n/a |
-| <a name="module_vpn"></a> [vpn](#module\_vpn) | ./modules/vpn_ha | n/a |
+| <a name="module_routes"></a> [routes](#module\_routes) | ./modules/network/routes | n/a |
+| <a name="module_subnets"></a> [subnets](#module\_subnets) | ./modules/network/subnets | n/a |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | ./modules/network/vpc | n/a |
+| <a name="module_vpn"></a> [vpn](#module\_vpn) | ./modules/network/vpn_ha | n/a |
 
 ## Resources
 
@@ -44,6 +44,7 @@
 | <a name="input_delete_default_internet_gateway_routes"></a> [delete\_default\_internet\_gateway\_routes](#input\_delete\_default\_internet\_gateway\_routes) | If set, ensure that all routes within the network specified whose names begin with 'default-route' and with a next hop of 'default-internet-gateway' are deleted | `bool` | `true` | no |
 | <a name="input_description"></a> [description](#input\_description) | An optional description of this resource. The resource must be recreated to modify this field. | `string` | `""` | no |
 | <a name="input_domain"></a> [domain](#input\_domain) | Zone domain. | `string` | `"foo.local."` | no |
+| <a name="input_enable_shared_vpc_host_project"></a> [enable\_shared\_vpc\_host\_project](#input\_enable\_shared\_vpc\_host\_project) | Makes this project a Shared VPC host if 'true' (default 'false') | `bool` | `true` | no |
 | <a name="input_firewall_rules"></a> [firewall\_rules](#input\_firewall\_rules) | List of firewall rules | `any` | `[]` | no |
 | <a name="input_folder_id"></a> [folder\_id](#input\_folder\_id) | The folder id for the associated project | `string` | `""` | no |
 | <a name="input_labels"></a> [labels](#input\_labels) | A set of key/value label pairs to assign to this ManagedZone | `map(any)` | <pre>{<br>  "owner": "newacceleration",<br>  "version": "1.0"<br>}</pre> | no |
@@ -56,7 +57,6 @@
 | <a name="input_routes"></a> [routes](#input\_routes) | List of routes being created in this VPC | `list(map(string))` | `[]` | no |
 | <a name="input_routing_mode"></a> [routing\_mode](#input\_routing\_mode) | The network routing mode (default 'GLOBAL') | `string` | `"GLOBAL"` | no |
 | <a name="input_secondary_ranges"></a> [secondary\_ranges](#input\_secondary\_ranges) | Secondary ranges that will be used in some of the subnets | `map(list(object({ range_name = string, ip_cidr_range = string })))` | `{}` | no |
-| <a name="input_shared_vpc_host"></a> [shared\_vpc\_host](#input\_shared\_vpc\_host) | Makes this project a Shared VPC host if 'true' (default 'false') | `bool` | `true` | no |
 | <a name="input_subnets"></a> [subnets](#input\_subnets) | The list of subnets being created | `list(map(string))` | `[]` | no |
 | <a name="input_type"></a> [type](#input\_type) | The type of the project if it is hub or spoke. | `string` | `"hub"` | no |
 
