@@ -33,6 +33,7 @@ locals {
 
 module "project" {
   source               = "./modules/project"
+
   random_project_id    = true
   name                 = local.project_name
   org_id               = var.organization_id
@@ -69,7 +70,7 @@ resource "google_project_iam_binding" "project" {
 	VPC configuration
  *****************************************/
 module "vpc" {
-  source = "./modules/vpc"
+  source = "./modules/network/vpc"
 
   #count        = var.type == "hub" ? 1 : 0
   network_name = "${local.network_name}-acceleration-xpn-001"
@@ -81,7 +82,7 @@ module "vpc" {
 	Subnet configuration
  *****************************************/
 module "subnets" {
-  source = "./modules/vpc/subnets"
+  source = "./modules/network/subnets"
 
   project_id       = module.project.project_id
   network_name     = module.vpc.network_name
@@ -93,7 +94,7 @@ module "subnets" {
 	Routes
  *****************************************/
 module "routes" {
-  source = "./modules/vpc/routes"
+  source = "./modules/network/routes"
 
   project_id        = module.project.project_id
   network_name      = module.vpc.network_name
@@ -106,7 +107,7 @@ module "routes" {
  *****************************************/
 
 module "firewall_rules" {
-  source = "./modules/vpc/firewalls"
+  source = "./modules/network/firewalls"
 
   project_id   = module.project.project_id
   network_name = module.vpc.network_name
@@ -119,7 +120,7 @@ module "firewall_rules" {
  *****************************************/
 
 module "dns-private-zone" {
-  source     = "./modules/vpc/dns"
+  source     = "./modules/network/dns"
 
   project_id = module.project.project_id
   type       = "private"
@@ -144,7 +145,7 @@ module "dns-private-zone" {
 
 
 module "dns-peering-zone" {
-  source                             = "./modules/vpc/dns"
+  source                             = "./modules/network/dns"
   project_id                         = module.project.project_id
   type                               = "peering"
   name                               = "${local.network_name}-acceleration-peering"
@@ -163,7 +164,7 @@ module "dns-peering-zone" {
 //Create Router
 
 module "cloud_router" {
-  source = "./modules/vpc/cloud_router"
+  source = "./modules/network/cloud_router"
 
   name    = "${local.network_name}-${var.router_name}"
   project = module.project.project_id
@@ -176,7 +177,7 @@ module "cloud_router" {
  *****************************************/
 
 module "vpn" {
-  source = "./modules/vpn_ha"
+  source = "./modules/network/vpn_ha"
 
 
   project_id  = module.project.project_id
