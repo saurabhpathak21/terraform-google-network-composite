@@ -1,0 +1,7 @@
+---
+routes:
+  - name: prod-acceleration-xpn-001-route
+    description: route through IGW to access internet
+    destination_range: 0.0.0.0/0
+    tags: egress-internet
+    next_hop_internet: true
