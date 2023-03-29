@@ -26,9 +26,9 @@ locals {
 /******************************************
   Hub Project Creation
  *****************************************/
-
 module "project" {
-  source = "./modules/project"
+  source  = "terraform-google-modules/project-factory/google"
+  version = "14.2.0"
 
   random_project_id              = true
   name                           = local.project_name
@@ -65,8 +65,8 @@ resource "google_project_iam_binding" "project" {
 	VPC configuration
  *****************************************/
 module "vpc" {
-  source = "./modules/network/vpc"
-
+  source                                 = "terraform-google-modules/network/google//modules/vpc"
+  version                                = "6.0.1"
   network_name                           = "${local.network_name}-acceleration-xpn-001"
   project_id                             = module.project.project_id
   delete_default_internet_gateway_routes = true
@@ -77,7 +77,8 @@ module "vpc" {
 	Subnet configuration
  *****************************************/
 module "subnets" {
-  source = "./modules/network/subnets"
+  source  = "terraform-google-modules/network/google//modules/subnets"
+  version = "6.0.1"
 
   project_id       = module.project.project_id
   network_name     = module.vpc.network_name
@@ -89,7 +90,8 @@ module "subnets" {
 	Routes
  *****************************************/
 module "routes" {
-  source = "./modules/network/routes"
+  source  = "terraform-google-modules/network/google//modules/routes"
+  version = "6.0.1"
 
   project_id        = module.project.project_id
   network_name      = module.vpc.network_name
@@ -102,7 +104,8 @@ module "routes" {
  *****************************************/
 
 module "firewall_rules" {
-  source = "./modules/network/firewalls"
+  source  = "terraform-google-modules/network/google//modules/firewall-rules"
+  version = "6.0.1"
 
   project_id   = module.project.project_id
   network_name = module.vpc.network_name
@@ -115,7 +118,8 @@ module "firewall_rules" {
  *****************************************/
 
 module "dns-private-zone" {
-  source = "./modules/network/dns"
+  source  = "terraform-google-modules/cloud-dns/google"
+  version = "4.2.1"
 
   project_id                         = module.project.project_id
   type                               = "private"
@@ -159,7 +163,8 @@ module "dns-peering-zone" {
 //Create Router
 
 module "cloud_router" {
-  source = "./modules/network/cloud_router"
+  source  = "terraform-google-modules/cloud-router/google"
+  version = "5.0.0"
 
   name    = "${local.network_name}-${var.router_name}"
   project = module.project.project_id
@@ -172,7 +177,8 @@ module "cloud_router" {
  *****************************************/
 
 module "vpn" {
-  source = "./modules/network/vpn_ha"
+  source  = "terraform-google-modules/vpn/google//modules/vpn_ha"
+  version = "~> 1.3.0"
 
 
   project_id  = module.project.project_id

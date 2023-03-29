@@ -1,4 +1,5 @@
 
+
 output "project_info" {
   value       = module.project.project_id
   description = "The ID of the created project"
