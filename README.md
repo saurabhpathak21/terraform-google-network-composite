@@ -19,14 +19,14 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_cloud_router"></a> [cloud\_router](#module\_cloud\_router) | ./modules/network/cloud_router | n/a |
-| <a name="module_dns-private-zone"></a> [dns-private-zone](#module\_dns-private-zone) | ./modules/network/dns | n/a |
-| <a name="module_firewall_rules"></a> [firewall\_rules](#module\_firewall\_rules) | ./modules/network/firewalls | n/a |
-| <a name="module_project"></a> [project](#module\_project) | ./modules/project | n/a |
-| <a name="module_routes"></a> [routes](#module\_routes) | ./modules/network/routes | n/a |
-| <a name="module_subnets"></a> [subnets](#module\_subnets) | ./modules/network/subnets | n/a |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | ./modules/network/vpc | n/a |
-| <a name="module_vpn"></a> [vpn](#module\_vpn) | ./modules/network/vpn_ha | n/a |
+| <a name="module_cloud_router"></a> [cloud\_router](#module\_cloud\_router) | terraform-google-modules/cloud-router/google | 5.0.0 |
+| <a name="module_dns-private-zone"></a> [dns-private-zone](#module\_dns-private-zone) | terraform-google-modules/cloud-dns/google | 4.2.1 |
+| <a name="module_firewall_rules"></a> [firewall\_rules](#module\_firewall\_rules) | terraform-google-modules/network/google//modules/firewall-rules | 6.0.1 |
+| <a name="module_project"></a> [project](#module\_project) | terraform-google-modules/project-factory/google | 14.2.0 |
+| <a name="module_routes"></a> [routes](#module\_routes) | terraform-google-modules/network/google//modules/routes | 6.0.1 |
+| <a name="module_subnets"></a> [subnets](#module\_subnets) | terraform-google-modules/network/google//modules/subnets | 6.0.1 |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-google-modules/network/google//modules/vpc | 6.0.1 |
+| <a name="module_vpn"></a> [vpn](#module\_vpn) | terraform-google-modules/vpn/google//modules/vpn_ha | ~> 1.3.0 |
 
 ## Resources
 
