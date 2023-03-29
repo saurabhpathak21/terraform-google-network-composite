@@ -20,6 +20,7 @@
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_cloud_router"></a> [cloud\_router](#module\_cloud\_router) | terraform-google-modules/cloud-router/google | 5.0.0 |
+| <a name="module_dns-peering-zone"></a> [dns-peering-zone](#module\_dns-peering-zone) | terraform-google-modules/cloud-dns/google | 3.0.0 |
 | <a name="module_dns-private-zone"></a> [dns-private-zone](#module\_dns-private-zone) | terraform-google-modules/cloud-dns/google | 4.2.1 |
 | <a name="module_firewall_rules"></a> [firewall\_rules](#module\_firewall\_rules) | terraform-google-modules/network/google//modules/firewall-rules | 6.0.1 |
 | <a name="module_project"></a> [project](#module\_project) | terraform-google-modules/project-factory/google | 14.2.0 |
@@ -44,6 +45,7 @@
 | <a name="input_delete_default_internet_gateway_routes"></a> [delete\_default\_internet\_gateway\_routes](#input\_delete\_default\_internet\_gateway\_routes) | If set, ensure that all routes within the network specified whose names begin with 'default-route' and with a next hop of 'default-internet-gateway' are deleted | `bool` | `true` | no |
 | <a name="input_description"></a> [description](#input\_description) | An optional description of this resource. The resource must be recreated to modify this field. | `string` | `""` | no |
 | <a name="input_domain"></a> [domain](#input\_domain) | Zone domain. | `string` | `"foo.local."` | no |
+| <a name="input_enable_peering"></a> [enable\_peering](#input\_enable\_peering) | enable the dns peering and provide the target project id | `bool` | `false` | no |
 | <a name="input_enable_shared_vpc_host_project"></a> [enable\_shared\_vpc\_host\_project](#input\_enable\_shared\_vpc\_host\_project) | Makes this project a Shared VPC host if 'true' (default 'false') | `bool` | `true` | no |
 | <a name="input_firewall_rules"></a> [firewall\_rules](#input\_firewall\_rules) | List of firewall rules | `any` | `[]` | no |
 | <a name="input_folder_id"></a> [folder\_id](#input\_folder\_id) | The folder id for the associated project | `string` | `""` | no |
@@ -58,6 +60,7 @@
 | <a name="input_routing_mode"></a> [routing\_mode](#input\_routing\_mode) | The network routing mode (default 'GLOBAL') | `string` | `"GLOBAL"` | no |
 | <a name="input_secondary_ranges"></a> [secondary\_ranges](#input\_secondary\_ranges) | Secondary ranges that will be used in some of the subnets | `map(list(object({ range_name = string, ip_cidr_range = string })))` | `{}` | no |
 | <a name="input_subnets"></a> [subnets](#input\_subnets) | The list of subnets being created | `list(map(string))` | `[]` | no |
+| <a name="input_target_network_self_link"></a> [target\_network\_self\_link](#input\_target\_network\_self\_link) | Self link of the network that the zone will peer to. | `string` | `""` | no |
 | <a name="input_type"></a> [type](#input\_type) | The type of the project if it is hub or spoke. | `string` | `"hub"` | no |
 
 ## Outputs
