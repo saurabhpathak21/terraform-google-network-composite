@@ -122,3 +122,15 @@ variable "module_depends_on" {
   type        = list(any)
   default     = []
 }
+
+variable "target_network_self_link" {
+  description = "Self link of the network that the zone will peer to."
+  default     = ""
+}
+
+variable "enable_peering" {
+  description = "enable the dns peering and provide the target project id "
+  default     = false
+  type        = bool
+}
+

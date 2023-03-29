@@ -139,22 +139,23 @@ module "dns-private-zone" {
   ]
 }
 
-/*
 //DNS Peering- Enable to peer the DNS
 
 
 module "dns-peering-zone" {
-  source                             = "./modules/network/dns"
+  source  = "terraform-google-modules/cloud-dns/google"
+  version = "3.0.0"
+
+  count                              = var.enable_peering == true ? 1 : 0
   project_id                         = module.project.project_id
   type                               = "peering"
   name                               = "${local.network_name}-acceleration-peering"
   domain                             = "new-acceleration.com."
   private_visibility_config_networks = [module.vpc.network_self_link]
-  target_network                     = var.target_network_self_link  #Update the target network to which DNS peering is required
-  labels                             = var.labels
+  target_network                     = var.target_network_self_link #Update the target network to which DNS peering is required
 }
 
-*/
+
 /******************************************
 	Router
  *****************************************/
