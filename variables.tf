@@ -1,6 +1,7 @@
 
 variable "organization_id" {
   description = "The organization id for the associated services"
+  default =   "465464"
 }
 
 variable "folder_id" {
@@ -11,6 +12,7 @@ variable "folder_id" {
 
 variable "billing_account" {
   description = "The ID of the billing account to associate this project with"
+  default = "329823"
 
 }
 
