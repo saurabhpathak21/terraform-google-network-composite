@@ -52,7 +52,6 @@ jobs:
         id: install_terraform_compliance
         run:  |
           sudo apt update 
-          sudo apt install python3-pip 
           sudo apt install pip3 terraform-compliance
         continue-on-error: true
         
