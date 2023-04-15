@@ -53,7 +53,7 @@ jobs:
         with:
           python-version: '3.10'  
 
-      - name: Install Dependencies
+      - name: Install Dependencies for terraform compliance
         run: pip install terraform-compliance
         shell: bash
         
@@ -66,10 +66,15 @@ jobs:
       #   id:  apply
       #   run: terraform apply
       #   continue-on-error: true
+      - name: install chef
+        uses: actionshub/chef-install@main
+        with:
+          channel: current
+          project: inspec
 
-      - name: Compliance check
+      - name: Functional check
         id: Functional_test
-        run: cd gcp-profile/ && inspec exec . -t gcp:// --input-file=inputs.yml
+        run: inspec exec . -t gcp:// --input-file=/my-gcp-profile/inputs.yml --chef-license=accept
         continue-on-error: true
 
       # - #name: Update Pull Request

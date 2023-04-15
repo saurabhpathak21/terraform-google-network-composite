@@ -27,7 +27,7 @@ gcp_project_id: 'my-gcp-project'
 
 ```
 $ cd gcp-profile/
-$ inspec exec . -t gcp:// --input-file=inputs.yml
+$ inspec exec . -t gcp:// --input-file=/my-gcp-profile/inputs.yml
 
 Profile: GCP InSpec Profile (my-profile)
 Version: 0.1.0
