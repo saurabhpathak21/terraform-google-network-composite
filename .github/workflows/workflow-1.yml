@@ -47,13 +47,15 @@ jobs:
         id: plan
         run: terraform plan -no-color -input=false -out=plan.out
         continue-on-error: true
+      
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'  
 
-      - name: Install terraform compliance 
-        id: install_terraform_compliance
-        run:  |
-          sudo apt update 
-          sudo apt install pip3 terraform-compliance
-        continue-on-error: true
+      - name: Install Dependencies
+        run: pip install terraform-compliance
+        shell: bash
         
       - name: Compliance check
         id: Compliance
