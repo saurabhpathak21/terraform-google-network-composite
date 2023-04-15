@@ -74,7 +74,7 @@ jobs:
 
       - name: Functional check
         id: Functional_test
-        run: inspec exec . -t gcp:// --input-file=my-gcp-profile/inputs.yml --chef-license=accept
+        run: inspec exec -t gcp:// --input-file=my-gcp-profile/inputs.yml --chef-license=accept
         continue-on-error: true
 
       # - #name: Update Pull Request
