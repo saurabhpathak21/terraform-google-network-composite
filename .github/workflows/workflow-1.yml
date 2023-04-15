@@ -59,7 +59,7 @@ jobs:
         
       - name: Compliance check
         id: Compliance
-        run: terraform-compliance -p plan.out -f compliance/project.feature
+        run: terraform-compliance -f compliance/ -p plan.out
         continue-on-error: true
 
       # - name: Terraform apply
