@@ -1,0 +1,99 @@
+name: "Terraform"
+
+on:
+  push:
+    branches:
+      - main
+  #pull_request:
+
+jobs:
+  terraform:
+    name: "Terraform"
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: 'actions/checkout@v3'
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          # terraform_version: 0.13.0:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+
+      - name: Terraform Init
+        id: init
+        run: terraform  init
+      
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -input=false -out=plan.out
+        continue-on-error: true
+      
+      - name: Compliance check
+        id: Compliance
+        run: terraform-compliance -p plan.out -f compliance/project.feature
+        continue-on-error: true
+
+      # - name: Terraform apply
+      #   id:  apply
+      #   run: terraform apply
+      #   continue-on-error: true
+
+      - name: Compliance check
+        id: Functional_test
+        run: cd gcp-profile/ && inspec exec . -t gcp:// --input-file=inputs.yml
+        continue-on-error: true
+
+      # - #name: Update Pull Request
+      #   #uses: actions/github-script@v6
+      #   #if: github.event_name == 'pull_request'
+      #   #env:
+      #   #  PLAN: ${{ steps.plan.outputs.stdout }}
+      #   #with:
+      #   #  github-token: ${{ secrets.GITHUB_TOKEN }}
+      #   #  script: |
+      #   #    const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+      #       #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+      #       #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+      #       #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+      #   #    <details><summary>Show Plan</summary>
+
+      #       \`\`\`terraform\n
+      #       ${process.env.PLAN}
+      #       \`\`\`
+
+      #       </details>
+
+      #       *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+      #       github.rest.issues.createComment({
+      #         issue_number: context.issue.number,
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         body: output
+      #       })
+
+      # - name: Terraform Plan Status
+      #   if: steps.plan.outcome == 'failure'
+      #   run: exit 1
+
+      # - name: Terraform Apply
+      #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      #   run: echo "terraform apply is not appplicable at the moment"
