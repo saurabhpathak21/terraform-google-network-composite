@@ -67,12 +67,19 @@ jobs:
         id: junit2html
         run: pip install junit2html && junit2html result.xml compliance_report.html 
         continue-on-error: true
-      
-      - name: Compliance test Summary
-        uses: test-summary/action@v2
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
         with:
-          paths: "**/result*.xml"
-        if: always()
+          name: compliance_report
+          path: compliance_report.html
+          retention-days: 5
+      
+      # - name: Compliance test Summary
+      #   uses: test-summary/action@v2
+      #   with:
+      #     paths: "**/result*.xml"
+      #   if: always()
 
         
 
