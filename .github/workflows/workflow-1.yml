@@ -59,7 +59,7 @@ jobs:
         
       - name: Compliance check
         id: Compliance
-        run: terraform-compliance -f compliance/ -p plan.out >> test.html
+        run: terraform-compliance -f compliance/ -p plan.out > test.html
         continue-on-error: true
 
       - name: Compliance check
