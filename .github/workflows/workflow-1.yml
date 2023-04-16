@@ -74,19 +74,13 @@ jobs:
           name: compliance_report
           path: compliance_report.html
           retention-days: 5
-      
-      # - name: Compliance test Summary
-      #   uses: test-summary/action@v2
-      #   with:
-      #     paths: "**/result*.xml"
-      #   if: always()
-
-        
+     
 
       # - name: Terraform apply
       #   id:  apply
       #   run: terraform apply
       #   continue-on-error: true
+
       - name: install chef
         uses: actionshub/chef-install@main
         with:
@@ -94,8 +88,20 @@ jobs:
 
       - name: Functional Test
         id: Functional_test
-        run: inspec exec -t gcp:// --input-file=my-gcp-profile/inputs.yml --chef-license=accept --reporter junit2:/tmp/junit.xml
+        run: inspec exec -t gcp:// --input-file=my-gcp-profile/inputs.yml --chef-license=accept --reporter junit:functional.xml
         continue-on-error: true
+
+      - name: Functional Test report
+        id: junit2_html_func
+        run: pip install junit2html && junit2html functional.xml functional_report.html 
+        continue-on-error: true
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: functional report
+          path: functional_report.html
+          retention-days: 5
 
       # - name: Functional Test Report
       #   uses: dorny/test-reporter@v1name
