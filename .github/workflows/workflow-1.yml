@@ -71,7 +71,7 @@ jobs:
       - name: Compliance test Summary
         uses: test-summary/action@v2
         with:
-          paths: result.xml
+          paths: "**/result*.xml"
         if: always()
 
         
