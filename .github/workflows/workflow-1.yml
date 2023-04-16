@@ -62,13 +62,13 @@ jobs:
         continue-on-error: true
       
       - name: Compliance Test Report
-        uses: dorny/test-reporter@v1name
+        uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
-          name: compliance test
-          path: "**/test.html"                            
-          reporter: Compliance-html
-          fail-on-error: true
+          files: |
+            test-results/**/*.xml
+            test-results/**/*.trx
+            test-results/**/*.json
         
 
       # - name: Terraform apply
@@ -79,7 +79,6 @@ jobs:
         uses: actionshub/chef-install@main
         with:
           channel: current
-          project: inspec
 
       - name: Functional Test
         id: Functional_test
