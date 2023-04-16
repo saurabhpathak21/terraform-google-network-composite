@@ -61,14 +61,13 @@ jobs:
         run: terraform-compliance -f compliance/ -p plan.out >> test.html
         continue-on-error: true
       
-      - name: Compliance Test Report
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
+      - name: Test Summary
+        uses: test-summary/action@v2
         with:
-          files: |
-            test-results/**/*.xml
-            test-results/**/*.trx
-            test-results/**/*.json
+          paths: "test/results/**/TEST-*.html"
+          output: test-summary.md
+        if: always()
+
         
 
       # - name: Terraform apply
@@ -85,6 +84,14 @@ jobs:
         run: inspec exec -t gcp:// --input-file=my-gcp-profile/inputs.yml --chef-license=accept --reporter junit2:/tmp/junit.xml
         continue-on-error: true
 
+      # - name: Functional Test Report
+      #   uses: dorny/test-reporter@v1name
+      #   if: always()
+      #   with:
+      #     name: Functional Test
+      #     path: "**/tmp/junit.xml"                            
+      #     reporter: dotnet-trx
+      #     fail-on-error: true
 
       # - #name: Update Pull Request
       #   #uses: actions/github-script@v6
