@@ -88,12 +88,12 @@ jobs:
 
       - name: Functional Test
         id: Functional_test
-        run: inspec exec -t gcp:// --input-file=my-gcp-profile/inputs.yml --chef-license=accept --reporter junit:functional.xml
+        run: inspec exec my-gcp-profile -t  gcp:// --input-file my-gcp-profile/inputs.yml  --insecure --chef-license=accept --reporter junit:functional.xml
         continue-on-error: true
 
       - name: Functional Test report
         id: junit2_html_func
-        run: pip install junit2html && junit2html functional.xml functional_report.html 
+        run: junit2html functional.xml functional_report.html 
         continue-on-error: true
 
       - name: Upload Artifact
