@@ -11,6 +11,7 @@ jobs:
     name: "Terraform"
     runs-on: ubuntu-latest
     permissions:
+      checks: write
       pull-requests: write
     steps:
       - uses: 'actions/checkout@v3'
@@ -59,19 +60,19 @@ jobs:
         
       - name: Compliance check
         id: Compliance
-        run: terraform-compliance -f compliance/ -p plan.out > compliance.html || true
+        run: terraform-compliance -f compliance/ -p plan.out --junit-xml result.xml
         continue-on-error: true
 
-      - name: Compliance check
-        id: pwd
-        run: ls -l && pwd
+      - name: Generate report
+        id: junit2html
+        run: pip install junit2html && junit2html result.xml compliance_report.html 
         continue-on-error: true
       
-      - name: Test Summary
+      - name: Compliance test Summary
         uses: test-summary/action@v2
         with:
-          paths: "compliance.html"  
-          output: test-summary.md
+          name: Compliance test Summary
+          path: result.xml
         if: always()
 
         
