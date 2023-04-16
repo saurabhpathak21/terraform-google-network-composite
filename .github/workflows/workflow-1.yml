@@ -30,8 +30,7 @@ jobs:
 
       - name: Terraform Format
         id: fmt
-        run: terraform fmt --check
-        continue-on-error: true
+        run: terraform fmt -check
 
       - name: Terraform Init
         id: init
@@ -45,7 +44,7 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -no-color -input=false -out=plan.out
+        run: terraform plan -no-color -input=false -out=plan.out -compact-warnings
         continue-on-error: true
       
       - name: Install Python
@@ -59,8 +58,18 @@ jobs:
         
       - name: Compliance check
         id: Compliance
-        run: terraform-compliance -f compliance/ -p plan.out
+        run: terraform-compliance -f compliance/ -p plan.out >> test.html
         continue-on-error: true
+      
+      - name: Compliance Test Report
+        uses: dorny/test-reporter@v1name
+        if: always()
+        with:
+          name: compliance test
+          path: "**/test.html"                            
+          reporter: Compliance-html
+          fail-on-error: true
+        
 
       # - name: Terraform apply
       #   id:  apply
@@ -72,10 +81,19 @@ jobs:
           channel: current
           project: inspec
 
-      - name: Functional check
+      - name: Functional Test
         id: Functional_test
-        run: inspec exec -t gcp:// --input-file=my-gcp-profile/inputs.yml --chef-license=accept
+        run: inspec exec -t gcp:// --input-file=my-gcp-profile/inputs.yml --chef-license=accept --reporter junit2:/tmp/junit.xml
         continue-on-error: true
+
+      - name: Functional Test Report
+        uses: dorny/test-reporter@v1name
+        if: always()
+        with:
+          name: Functional Test
+          path: "**/tmp/junit.xml"                            
+          reporter: dotnet-trx
+          fail-on-error: true
 
       # - #name: Update Pull Request
       #   #uses: actions/github-script@v6
