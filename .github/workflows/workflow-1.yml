@@ -59,7 +59,7 @@ jobs:
         
       - name: Compliance check
         id: Compliance
-        run: terraform-compliance -f compliance/ -p plan.out >> results/test.html
+        run: terraform-compliance -f compliance/ -p plan.out >> test.html
         continue-on-error: true
 
       - name: Compliance check
@@ -70,7 +70,7 @@ jobs:
       - name: Test Summary
         uses: test-summary/action@v2
         with:
-          paths: results/**/*.html
+          paths: "**/test.html"  
           output: test-summary.md
         if: always()
 
