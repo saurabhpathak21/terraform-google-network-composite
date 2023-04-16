@@ -60,11 +60,16 @@ jobs:
         id: Compliance
         run: terraform-compliance -f compliance/ -p plan.out >> test.html
         continue-on-error: true
+
+      - name: Compliance check
+        id: pwd
+        run: ls -l && pwd
+        continue-on-error: true
       
       - name: Test Summary
         uses: test-summary/action@v2
         with:
-          paths: "test/results/**/TEST-*.html"
+          paths: 
           output: test-summary.md
         if: always()
 
