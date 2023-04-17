@@ -5,13 +5,16 @@ on:
       - main
   #pull_request:
 jobs:
-  setup: 
+  build:
+    needs: setup
     runs-on: ubuntu-latest
     permissions:
       checks: write
       pull-requests: write
+    
     steps:
       - uses: 'actions/checkout@v3'
+
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
@@ -23,13 +26,7 @@ jobs:
         with:
           # terraform_version: 0.13.0:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-  build:
-    needs: setup
-    runs-on: ubuntu-latest
-    permissions:
-      checks: write
-      pull-requests: write
-    steps:
+
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
@@ -53,11 +50,25 @@ jobs:
       pull-requests: write
 
     steps:
+      - uses: 'actions/checkout@v3'
+      
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          # terraform_version: 0.13.0:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
       - name: Terraform Init
         id: init
         run: terraform  init
         continue-on-error: true
-        
+
       - name: Terraform Plan
         id: plan
         run: terraform plan -no-color -input=false -out=plan.out -compact-warnings
