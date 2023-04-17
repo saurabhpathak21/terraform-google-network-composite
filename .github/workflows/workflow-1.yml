@@ -1,0 +1,151 @@
+name: "Terraform"
+
+on:
+  push:
+    branches:
+      - main
+  #pull_request:
+
+jobs:
+  terraform:
+    name: "Terraform"
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
+    steps:
+      - uses: 'actions/checkout@v3'
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          # terraform_version: 0.13.0:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+
+      - name: Terraform Init
+        id: init
+        run: terraform  init
+        continue-on-error: true
+      
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+        continue-on-error: true
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -input=false -out=plan.out -compact-warnings
+        continue-on-error: true
+      
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'  
+
+      - name: Install Dependencies for terraform compliance
+        run: pip install terraform-compliance
+        shell: bash
+        
+      - name: Compliance check
+        id: Compliance
+        run: terraform-compliance -f compliance/ -p plan.out --junit-xml result.xml
+        continue-on-error: true
+
+      - name: Generate report
+        id: junit2html
+        run: pip install junit2html && junit2html result.xml compliance_report.html 
+        continue-on-error: true
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: compliance_report
+          path: compliance_report.html
+          retention-days: 5
+     
+
+      # - name: Terraform apply
+      #   id:  apply
+      #   run: terraform apply
+      #   continue-on-error: true
+
+      - name: install chef
+        uses: actionshub/chef-install@main
+        with:
+          channel: current
+
+      - name: Functional Test
+        id: Functional_test
+        run: inspec exec my-gcp-profile -t  gcp:// --input-file my-gcp-profile/inputs.yml  --insecure --chef-license=accept --reporter junit:functional.xml
+        continue-on-error: true
+
+      - name: Functional Test report
+        id: junit2_html_func
+        run: junit2html functional.xml functional_report.html 
+        continue-on-error: true
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: functional report
+          path: functional_report.html
+          retention-days: 5
+
+      # - name: Functional Test Report
+      #   uses: dorny/test-reporter@v1name
+      #   if: always()
+      #   with:
+      #     name: Functional Test
+      #     path: "**/tmp/junit.xml"                            
+      #     reporter: dotnet-trx
+      #     fail-on-error: true
+
+      # - #name: Update Pull Request
+      #   #uses: actions/github-script@v6
+      #   #if: github.event_name == 'pull_request'
+      #   #env:
+      #   #  PLAN: ${{ steps.plan.outputs.stdout }}
+      #   #with:
+      #   #  github-token: ${{ secrets.GITHUB_TOKEN }}
+      #   #  script: |
+      #   #    const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+      #       #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+      #       #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+      #       #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+      #   #    <details><summary>Show Plan</summary>
+
+      #       \`\`\`terraform\n
+      #       ${process.env.PLAN}
+      #       \`\`\`
+
+      #       </details>
+
+      #       *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+      #       github.rest.issues.createComment({
+      #         issue_number: context.issue.number,
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         body: output
+      #       })
+
+      # - name: Terraform Plan Status
+      #   if: steps.plan.outcome == 'failure'
+      #   run: exit 1
+
+      # - name: Terraform Apply
+      #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      #   run: echo "terraform apply is not appplicable at the moment"
