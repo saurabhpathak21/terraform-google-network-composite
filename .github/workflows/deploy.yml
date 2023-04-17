@@ -1,0 +1,55 @@
+
+name: Deploy
+on:
+  workflow_run:
+    workflows: [build]
+    types:
+      - completed
+jobs:
+  deploy: 
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
+    steps:
+      - uses: 'actions/checkout@v3'
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          # terraform_version: 0.13.0:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      # - name: Terraform apply
+      #   id:  apply
+      #   run: terraform apply
+      #   continue-on-error: true
+
+
+
+      - name: install chef
+        uses: actionshub/chef-install@main
+        with:
+          channel: current
+
+      - name: Functional Test
+        id: Functional_test
+        run: inspec exec my-gcp-profile -t  gcp:// --input-file my-gcp-profile/inputs.yml  --insecure --chef-license=accept --reporter junit:functional.xml
+        continue-on-error: true
+
+      - name: Functional Test report
+        id: junit2_html_func
+        run: junit2html functional.xml functional_report.html 
+        continue-on-error: true
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: functional report
+          path: functional_report.html
+          retention-days: 5

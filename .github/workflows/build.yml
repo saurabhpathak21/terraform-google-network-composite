@@ -1,0 +1,86 @@
+name: Build and Test
+on:
+  push:
+    branches:
+      - main
+  #pull_request:
+jobs:
+  setup: 
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
+    steps:
+      - uses: 'actions/checkout@v3'
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          # terraform_version: 0.13.0:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
+
+    steps:
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+
+      - name: Terraform Init
+        id: init
+        run: terraform  init
+        continue-on-error: true
+      
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+        continue-on-error: true
+
+  test:
+    needs: [setup, build]
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
+
+    steps:
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -input=false -out=plan.out -compact-warnings
+        continue-on-error: true
+      
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'  
+
+      - name: Install Dependencies for terraform compliance
+        run: pip install terraform-compliance
+        shell: bash
+        
+      - name: Compliance check
+        id: Compliance
+        run: terraform-compliance -f compliance/ -p plan.out --junit-xml result.xml
+        continue-on-error: true
+
+      - name: Generate report
+        id: junit2html
+        run: pip install junit2html && junit2html result.xml compliance_report.html 
+        continue-on-error: true
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: compliance_report
+          path: compliance_report.html
+          retention-days: 5
