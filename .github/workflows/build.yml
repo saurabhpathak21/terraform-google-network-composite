@@ -6,7 +6,6 @@ on:
   #pull_request:
 jobs:
   build:
-    needs: setup
     runs-on: ubuntu-latest
     permissions:
       checks: write
@@ -43,7 +42,7 @@ jobs:
         continue-on-error: true
 
   test:
-    needs: [setup, build]
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       checks: write
@@ -51,7 +50,7 @@ jobs:
 
     steps:
       - uses: 'actions/checkout@v3'
-      
+
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'

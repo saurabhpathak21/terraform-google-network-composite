@@ -25,12 +25,20 @@ jobs:
         with:
           # terraform_version: 0.13.0:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Init
+        id: init
+        run: terraform  init
+        continue-on-error: true
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -input=false -compact-warnings
+        continue-on-error: true
       # - name: Terraform apply
       #   id:  apply
       #   run: terraform apply
       #   continue-on-error: true
-
-
 
       - name: install chef
         uses: actionshub/chef-install@main
@@ -40,6 +48,11 @@ jobs:
       - name: Functional Test
         id: Functional_test
         run: inspec exec my-gcp-profile -t  gcp:// --input-file my-gcp-profile/inputs.yml  --insecure --chef-license=accept --reporter junit:functional.xml
+        continue-on-error: true
+
+      - name: Generate report
+        id: junit2html
+        run: pip install junit2html && junit2html result.xml compliance_report.html 
         continue-on-error: true
 
       - name: Functional Test report
