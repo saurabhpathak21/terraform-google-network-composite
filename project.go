@@ -1,12 +1,10 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
-
-	"cloud.google.com/go/compute"
-	"google.golang.org/api/cloudresourcemanager/v1"
+    "context"
+    "google.golang.org/api/cloudresourcemanager/v1"
 	"google.golang.org/api/option"
 )
 
@@ -30,26 +28,6 @@ func main() {
     for _, project := range projectsList.Projects {
         fmt.Printf("- Project ID: %s, Name: %s, Number: %d ", project.ProjectId, project.Name, project.ProjectNumber)
     }
-    //Network list
-    
-    client, err := compute.NewClient(ctx)
-    
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-    
-    defer client.Close()
-    
-    networks, err := client.ListNetworks(ctx, "")
-    
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-    
-    for _, network := range networks {
-        fmt.Println(network.Name)
-    }
 
 }
+
