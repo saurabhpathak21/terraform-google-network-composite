@@ -84,13 +84,23 @@ jobs:
         
       - name: Compliance check
         id: Compliance
-        run: terraform-compliance -f compliance/ -p plan.out --junit-xml result.xml
+        run: terraform-compliance -f compliance/ -p plan.out  --cucumber-json compliance/result.json
         continue-on-error: true
+        
+      - name: Publish the Report
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        id: allure-report
+        with:
+          allure_results: compliance/allure-results
+          gh_pages: gh-pages
+          allure_report: allure-report
+          allure_history: allure-history
 
-      - name: Generate report
-        id: junit2html
-        run: pip install junit2html && junit2html result.xml compliance_report.html 
-        continue-on-error: true
+#       - name: Generate report
+#         id: junit2html
+#         run: pip install junit2html && junit2html result.xml compliance_report.html 
+#         continue-on-error: true
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
