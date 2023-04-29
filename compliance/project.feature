@@ -1,8 +1,8 @@
 Feature: project feature 
-  Scenario: Ensure project module should include  hub or spoke
+  Scenario: Ensure project module should include the defined project name
     Given I have google_project defined
     Then it must contain name
-    And its value must be acceleration-hub
+    And its value must be <project_name>
 
 
   Scenario Outline: Ensure that specific tags are defined
