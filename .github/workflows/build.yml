@@ -87,16 +87,36 @@ jobs:
         run: terraform-compliance -f compliance/ -p plan.out --junit-xml report/compliance.xml
         continue-on-error: true
 
-      - name: Serve the reporot
-        uses: JamesIves/github-pages-deploy-action@4.1.5
-        id: Report
+
+      - name: Allure Report action from marketplace
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        #id: allure-report
+        with:
+          allure_results: report
+          gh_pages: gh-pages
+          allure_report: allure-report
+          allure_history: allure-history
+          keep_reports: 20
+
+      - name: Deploy report to Github Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v2
+        env:
+          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: allure-history
+
+      - name: Post the link to the report
+        if: always()
+        uses: Sibz/github-status-action@v1
         with: 
-          branch: gh-pages
-          folder: report
-        continue-on-error: true
-
-
-#       - name: Generate report
+            authToken: ${{secrets.GITHUB_TOKEN}}
+            context: 'Test report'
+            state: 'success'
+            sha: ${{ github.event.pull_request.head.sha }}
+            target_url: simple-elf.github.io/github-allure-history/${{ github.run_number }}
+  #       - name: Generate report
 #         id: junit2html 
 #         run: pip install junit2html && junit2html result.xml compliance_report.html 
 #         continue-on-error: true
