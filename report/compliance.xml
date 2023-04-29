@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites time="0.423">
+  <testsuite name="project feature" failures="5" errors="0" skipped="0" tests="9" time="0.423">
+    <testcase classname="project feature" name="Ensure project module should include the defined project name" time="0.008">
+      <failure type="Failure" message="And its value must be &lt;project_name&gt;"><![CDATA[Given I have google_project defined
+Then it must contain name
+And its value must be <project_name>
+
+Failure: name property in module.project.module.project-factory.google_project.main resource does not match with ^<project_name>$ case insensitive regex. It is set to acceleration-hub.]]></failure>
+    </testcase>
+    <testcase classname="project feature" name="Ensure that specific tags are defined - row 0" time="0.019">
+      <failure type="Failure" message="Then it must contain &quot;Name&quot;"><![CDATA[Given I have resource that supports labels defined
+When it has labels
+Then it must contain labels
+Then it must contain "Name"
+
+Failure: module.dns-private-zone.google_dns_managed_zone.private[0] (resource that supports labels) does not have Name property.]]></failure>
+    </testcase>
+    <testcase classname="project feature" name="Ensure that specific tags are defined - row 1" time="0.021">
+      <failure type="Failure" message="Then it must contain &quot;workstream&quot;"><![CDATA[Given I have resource that supports labels defined
+When it has labels
+Then it must contain labels
+Then it must contain "workstream"
+
+Failure: module.dns-private-zone.google_dns_managed_zone.private[0] (resource that supports labels) does not have workstream property.]]></failure>
+    </testcase>
+    <testcase classname="project feature" name="Ensure that specific tags are defined - row 2" time="0.016">
+      <failure type="Failure" message="Then it must contain &quot;role&quot;"><![CDATA[Given I have resource that supports labels defined
+When it has labels
+Then it must contain labels
+Then it must contain "role"
+
+Failure: module.dns-private-zone.google_dns_managed_zone.private[0] (resource that supports labels) does not have role property.]]></failure>
+    </testcase>
+    <testcase classname="project feature" name="Ensure that specific tags are defined - row 3" time="0.016">
+      <failure type="Failure" message="Then it must contain &quot;environment&quot;"><![CDATA[Given I have resource that supports labels defined
+When it has labels
+Then it must contain labels
+Then it must contain "environment"
+
+Failure: module.dns-private-zone.google_dns_managed_zone.private[0] (resource that supports labels) does not have environment property.]]></failure>
+    </testcase>
+    <testcase classname="project feature" name="Ensure my specific role is editor" time="0.008"/>
+    <testcase classname="project feature" name="Ensure my VPC network is created" time="0.010"/>
+    <testcase classname="project feature" name="Ensure my router region is europe-west2" time="0.015"/>
+    <testcase classname="project feature" name="Ensure my vpn gateway is created" time="0.008"/>
+  </testsuite>
+</testsuites>
