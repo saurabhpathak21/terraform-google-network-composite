@@ -92,7 +92,7 @@ jobs:
         id: Report
         with: 
           branch: gh-pages
-          folder: 
+          folder: report
         continue-on-error: true
 
 
