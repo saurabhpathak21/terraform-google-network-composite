@@ -87,7 +87,7 @@ jobs:
         run: terraform-compliance -f compliance/ -p plan.out --junit-xml report/compliance.xml
         continue-on-error: true
 
-      - name: Serve the report
+      - name: Serve the reporot
         uses: JamesIves/github-pages-deploy-action@4.1.5
         id: Report
         with: 
