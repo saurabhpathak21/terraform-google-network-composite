@@ -120,7 +120,7 @@ jobs:
           PUBLISH_DIR: allure-history
 
 #       - name: Generate report
-#         id: junit2html
+#         id: junit2html 
 #         run: pip install junit2html && junit2html result.xml compliance_report.html 
 #         continue-on-error: true
 
