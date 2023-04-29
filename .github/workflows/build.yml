@@ -84,7 +84,7 @@ jobs:
         
       - name: Compliance check
         id: Compliance
-        run: terraform-compliance -f compliance/ -p plan.out  --junit-xml report/compliance.xml
+        run: terraform-compliance -f compliance/ -p plan.out  --junit-xml /report/compliance.xml
         continue-on-error: true
 
       - name: Serve the report
