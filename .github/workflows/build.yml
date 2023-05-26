@@ -2,7 +2,7 @@ name: Build and Test
 on:
   push:
     branches:
-      - main
+      - CI/1010
   #pull_request:
 jobs:
   build:
