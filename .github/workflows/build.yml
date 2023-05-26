@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - CI/1010
-  #pull_request:
+  #pull_reequest:
 jobs:
   build:
     runs-on: ubuntu-latest
