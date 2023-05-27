@@ -2,7 +2,7 @@
 Feature: List the subnet of Project X
     Scenario: Ensure the project name is valid
       Given: I have a google_project
-      Then its "name" is "acceleration-hub"
+      Then its "name" is "accxeleration-hub"
       And check its lifecycle_state is "Active"
 
     Scenario: Ensure the project name is valid
