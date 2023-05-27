@@ -1,11 +1,9 @@
 
 ---
 name: Deploy
-on:
-  workflow_dispatch:
-    inputs: pullRequestNumber
-      description: Pull request number to auto-approve
-      required: false
+
+on: pull_request_target
+  
   # workflow_run:
   #   workflows: [Build and Test]
   #   types:
@@ -15,10 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+    if: github.actor == 'dependabot[bot]'
     steps:
-     - uses: hmarr/auto-approve-action@v3
-       with:
-        pull-request-number: ${{ github.event.inputs.pullRequestNumber }}
+      - uses: hmarr/auto-approve-action@v3
+      
   deploy: 
     runs-on: ubuntu-latest
     permissions:
