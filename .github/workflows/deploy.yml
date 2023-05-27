@@ -1,14 +1,24 @@
 
+---
 name: Deploy
 on:
-    push:
-      branches:
-        - main
+  workflow_dispatch:
+    inputs: pullRequestNumber
+      description: Pull request number to auto-approve
+      required: false
   # workflow_run:
   #   workflows: [Build and Test]
   #   types:
   #     - completed
 jobs:
+  auto-approve:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+     - uses: hmarr/auto-approve-action@v3
+       with:
+        pull-request-number: ${{ github.event.inputs.pullRequestNumber }}
   deploy: 
     runs-on: ubuntu-latest
     permissions:
